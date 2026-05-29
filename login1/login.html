@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Seguro</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+        <!-- Desenvolvido Por Bruno Otávio Jeronimo Melo | Pedra-PE -->
+<body>
+    <div class="background-blur"></div>
+
+    <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema">
+        <svg id="sunIcon" style="display: none;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg id="moonIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <main class="login-wrapper">
+        <div class="login-card">
+            
+            <div class="header">
+                <div class="lock-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="5" y="11" width="14" height="10" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        <circle cx="12" cy="16" r="1"></circle>
+                    </svg>
+                </div>
+                <h1>Acesso Seguro</h1>
+            </div>
+
+            <!-- Desenvolvido Por Bruno Otávio Jeronimo Melo | Pedra-PE -->
+
+            <form id="loginForm">
+                
+                <div class="input-group">
+                    <span class="icon-left icon-muted">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <input type="email" id="email" placeholder="usuario@email.com" required autocomplete="email">
+                </div>
+
+                <div class="input-group highlight-input">
+                    <span class="icon-left icon-primary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </span>
+                    <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                    <button type="button" id="togglePassword" class="icon-right" aria-label="Alternar visibilidade da senha">
+                        <svg id="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <line id="eye-slash" x1="1" y1="1" x2="23" y2="23" style="display: none;"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="help-links">
+                    <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-primary">Entrar Seguramente</button>
+            </form>
+
+            <div class="footer-links">
+                <a href="#">Conta Bloqueada?</a>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Desenvolvido Por Bruno Otávio Jeronimo Melo | Pedra-PE -->
+
+    <script type="module" src="login.js"></script>
+</body>
+</html>

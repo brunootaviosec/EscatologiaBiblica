@@ -1,0 +1,234 @@
+/* Variáveis para o MODO CLARO (Padrão) */
+/* Desenvolvido Por Bruno Otávio Jeronimo Melo | Pedra-PE */
+:root {
+    --primary-color: #1c3a5e; 
+    --primary-hover: #122640;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --bg-card: #ffffff;
+    --border-color: #cbd5e1;
+    --input-bg: transparent;
+    --input-bg-highlight: #f1f5f9; 
+    --glass-bg: rgba(241, 245, 249, 0.4);
+    --btn-text: #ffffff;
+    --transition: 0.3s ease;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Variáveis para o MODO ESCURO */
+body.dark-mode {
+    --primary-color: #38bdf8; /* Azul mais vibrante para contraste no escuro */
+    --primary-hover: #0284c7;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --bg-card: #0f172a; /* Fundo do painel escuro */
+    --border-color: #334155;
+    --input-bg-highlight: #1e293b;
+    --glass-bg: rgba(15, 23, 42, 0.7); /* Vidro escuro */
+    --btn-text: #0f172a; /* Texto do botão invertido */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+    color: var(--text-main);
+    transition: background-color var(--transition), color var(--transition);
+}
+
+/* Fundo Vidro */
+.background-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 1;
+    transition: background var(--transition);
+}
+
+/* Botão de Tema */
+.theme-toggle {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    border-color: var(--primary-color);
+}
+
+/* Container do Login */
+.login-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+}
+
+.login-card {
+    background-color: var(--bg-card);
+    padding: 48px 40px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+/* Cabeçalho */
+.header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.lock-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: var(--primary-color);
+    transition: color var(--transition);
+}
+
+.header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+}
+
+/* Inputs */
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    background-color: var(--bg-card);
+    transition: var(--transition);
+}
+
+.input-group.highlight-input {
+    background-color: var(--input-bg-highlight);
+}
+
+.input-group:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+/* Cores dos Ícones Inteligentes */
+.icon-left {
+    padding: 0 14px;
+    display: flex;
+}
+.icon-muted { color: var(--text-muted); }
+.icon-primary { color: var(--primary-color); }
+
+.input-group input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 16px 16px 16px 0;
+    font-size: 15px;
+    color: var(--text-main);
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.icon-right {
+    background: none;
+    border: none;
+    padding: 0 16px;
+    cursor: pointer;
+    display: flex;
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+.icon-right:hover {
+    color: var(--primary-color);
+}
+
+/* Links */
+.help-links {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 28px;
+    margin-top: -4px;
+}
+
+.help-links a, .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color var(--transition);
+}
+
+/* Desenvolvido Por Bruno Otávio Jeronimo Melo | Pedra-PE */
+
+.help-links a:hover, .footer-links a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Botão Principal */
+.btn-primary {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: var(--btn-text);
+    border: none;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 24px;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Rodapé */
+/* Desenvolvido Por Bruno Otávio Jeronimo Melo | Pedra-PE */
+.footer-links {
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 24px;
+}
