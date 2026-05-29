@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// Adicionamos o "deleteDoc" aqui em cima!
+import { getFirestore, collection, addDoc, doc, setDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // COLOQUE SUAS CHAVES REAIS DO FIREBASE AQUI
@@ -27,22 +28,32 @@ onAuthStateChanged(auth, (user) => {
         alert("⚠️ Acesso Negado: Área restrita à administração.");
         window.location.href = "principal.html";
     } else {
-        // Acesso liberado, carrega as pastas para sugestão
+        // Acesso liberado, carrega tudo!
         carregarPastasExistentes();
+        carregarEstudosParaGerenciar(); // Carrega a lista de excluir
     }
 });
 
-// Função para formatar o nome da pasta e criar um ID único e limpo
+// Formata o nome da pasta para ID
 function criarIdDaPasta(nome) {
     return nome.toString().toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
-        .replace(/\s+/g, '-') // Troca espaços por hifens
-        .replace(/[^\w\-]+/g, '') // Remove caracteres especiais
-        .replace(/\-\-+/g, '-') // Remove hifens duplos
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]+/g, '')
+        .replace(/\-\-+/g, '-')
         .trim();
 }
 
-// Carrega as pastas do Firebase e joga na lista de sugestões (Datalist)
+// Mostra mensagem na tela
+function mostrarMensagem(texto, tipo) {
+    const msgBox = document.getElementById('statusMsg');
+    msgBox.textContent = texto;
+    msgBox.className = tipo;
+    msgBox.style.display = 'block';
+    setTimeout(() => { msgBox.style.display = 'none'; }, 4000);
+}
+
+// 1. CARREGAR PASTAS NO DATALIST (Sugestões)
 async function carregarPastasExistentes() {
     const pastasList = document.getElementById('pastasList');
     pastasList.innerHTML = ''; 
@@ -58,16 +69,62 @@ async function carregarPastasExistentes() {
     }
 }
 
-// Mostra mensagem na tela
-function mostrarMensagem(texto, tipo) {
-    const msgBox = document.getElementById('statusMsg');
-    msgBox.textContent = texto;
-    msgBox.className = tipo;
-    msgBox.style.display = 'block';
-    setTimeout(() => { msgBox.style.display = 'none'; }, 4000);
+// 2. CARREGAR ESTUDOS PARA O GERENCIADOR (Para poder excluir)
+async function carregarEstudosParaGerenciar() {
+    const listaEstudos = document.getElementById('listaEstudos');
+    listaEstudos.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Carregando...</p>';
+    
+    try {
+        const querySnapshot = await getDocs(collection(db, "pdfs"));
+        listaEstudos.innerHTML = ''; // Limpa o "Carregando..."
+
+        if (querySnapshot.empty) {
+            listaEstudos.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nenhum estudo publicado ainda.</p>';
+            return;
+        }
+
+        querySnapshot.forEach((documento) => {
+            const pdf = documento.data();
+            const item = document.createElement('div');
+            item.className = 'estudo-item';
+            item.innerHTML = `
+                <div class="estudo-info">
+                    <strong>${pdf.titulo}</strong>
+                    <small>Pasta: ${pdf.pastaId}</small>
+                </div>
+                <button class="btn-excluir" data-id="${documento.id}">Excluir</button>
+            `;
+            listaEstudos.appendChild(item);
+        });
+
+        // Adiciona a função de excluir em cada botão que acabou de ser criado na tela
+        document.querySelectorAll('.btn-excluir').forEach(botao => {
+            botao.addEventListener('click', async (e) => {
+                const docId = e.target.getAttribute('data-id');
+                
+                // Pede confirmação antes de apagar
+                if(confirm("Tem certeza que deseja APAGAR este estudo do site?")) {
+                    e.target.textContent = "Apagando...";
+                    try {
+                        // Deleta do Banco de Dados
+                        await deleteDoc(doc(db, "pdfs", docId));
+                        mostrarMensagem("🗑️ Estudo removido com sucesso!", "success");
+                        // Recarrega a lista para o estudo sumir da tela
+                        carregarEstudosParaGerenciar();
+                    } catch (error) {
+                        console.error("Erro ao excluir:", error);
+                        mostrarMensagem("❌ Erro ao excluir.", "error");
+                    }
+                }
+            });
+        });
+
+    } catch (error) {
+        console.error("Erro ao carregar gerenciador: ", error);
+    }
 }
 
-// Ação de Salvar
+// 3. AÇÃO DE SALVAR NOVO ESTUDO
 document.getElementById('formAdmin').addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -78,25 +135,17 @@ document.getElementById('formAdmin').addEventListener('submit', async (e) => {
     const titulo = document.getElementById('titulo').value.trim();
     let link = document.getElementById('link').value.trim();
     const pastaNome = document.getElementById('pastaNome').value.trim();
-    
-    // Gera o ID automaticamente (ex: "A Volta de Cristo" vira "a-volta-de-cristo")
     const pastaId = criarIdDaPasta(pastaNome);
 
-    // Correção Automática do Link do Drive
     if (link.includes('/view')) {
         link = link.split('/view')[0] + '/preview';
-    } else if (!link.includes('/preview')) {
-        // Tenta forçar o preview se for um link do drive genérico
-        if (link.includes('drive.google.com/file/d/')) {
-            link = link + '/preview';
-        }
+    } else if (!link.includes('/preview') && link.includes('drive.google.com/file/d/')) {
+        link = link + '/preview';
     }
 
     try {
-        // 1. Cria a pasta (se já existir com esse ID, ele apenas confirma o nome)
         await setDoc(doc(db, "pastas", pastaId), { nome: pastaNome });
 
-        // 2. Adiciona o PDF
         const hoje = new Date().toLocaleDateString('pt-BR');
         await addDoc(collection(db, "pdfs"), {
             titulo: titulo,
@@ -107,13 +156,13 @@ document.getElementById('formAdmin').addEventListener('submit', async (e) => {
 
         mostrarMensagem("✅ Estudo publicado com sucesso!", "success");
         
-        // Limpa os campos do estudo, mas mantém a pasta selecionada para facilitar envio em lote
         document.getElementById('titulo').value = '';
         document.getElementById('link').value = '';
         document.getElementById('titulo').focus();
         
-        // Atualiza a lista de sugestões
+        // Atualiza a tela automaticamente para mostrar a nova pasta e o novo estudo na lista de exclusão
         carregarPastasExistentes();
+        carregarEstudosParaGerenciar();
         
     } catch (error) {
         console.error("Erro ao salvar:", error);

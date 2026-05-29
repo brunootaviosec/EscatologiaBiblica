@@ -39,81 +39,74 @@
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--border);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        h2 {
-            margin-top: 0;
-            color: var(--text-main);
-            margin-bottom: 8px;
-            text-align: center;
-            font-size: 1.8rem;
-        }
+        /* Esconde a barra de rolagem do card principal */
+        .admin-card::-webkit-scrollbar { width: 0px; }
 
-        p.subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 32px;
-            font-size: 0.9rem;
-        }
+        h2 { margin-top: 0; color: var(--text-main); margin-bottom: 8px; text-align: center; font-size: 1.8rem; }
+        p.subtitle { text-align: center; color: var(--text-muted); margin-bottom: 32px; font-size: 0.9rem; }
 
         .input-group { margin-bottom: 24px; position: relative; }
         label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.85rem; font-weight: 500; }
         
         input {
-            width: 100%;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            outline: none;
-            font-size: 1rem;
-            transition: 0.3s;
+            width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.3); color: white; outline: none; font-size: 1rem; transition: 0.3s;
         }
 
         input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2); }
         input::placeholder { color: #555; }
 
-        button {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1.05rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+        button.btn-principal {
+            width: 100%; padding: 16px; background: var(--primary); color: white; border: none;
+            border-radius: 12px; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
+        button.btn-principal:hover { background: #007aff; transform: translateY(-2px); }
+        button.btn-principal:active { transform: scale(0.97); }
 
-        button:hover { background: #007aff; transform: translateY(-2px); }
-        button:active { transform: scale(0.97); }
-
-        .voltar {
-            display: block;
-            text-align: center;
-            margin-top: 24px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
+        .voltar { display: block; text-align: center; margin-top: 24px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
         .voltar:hover { color: white; }
 
-        /* Estilo da lista de sucesso */
-        #statusMsg {
-            text-align: center; margin-top: 16px; font-size: 0.9rem; font-weight: 500; display: none;
-        }
+        #statusMsg { text-align: center; margin-top: 16px; font-size: 0.9rem; font-weight: 500; display: none; }
         .success { color: #34c759; }
         .error { color: #ff3b30; }
+
+        /* --- SESSÃO DE GERENCIAMENTO (EXCLUIR) --- */
+        .gerenciador-header {
+            margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border);
+        }
+        .gerenciador-header h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        .gerenciador-header p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; }
+
+        .lista-estudos {
+            max-height: 250px; overflow-y: auto; padding-right: 8px;
+        }
+        .lista-estudos::-webkit-scrollbar { width: 6px; }
+        .lista-estudos::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+
+        .estudo-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 0, 0, 0.2); padding: 12px 16px; border-radius: 12px;
+            margin-bottom: 8px; border: 1px solid var(--border);
+        }
+        .estudo-info { display: flex; flex-direction: column; gap: 4px; }
+        .estudo-info strong { font-size: 0.95rem; color: var(--text-main); }
+        .estudo-info small { font-size: 0.8rem; color: var(--text-muted); }
+        
+        .btn-excluir {
+            background: rgba(255, 59, 48, 0.15); color: #ff3b30; border: 1px solid rgba(255, 59, 48, 0.3);
+            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.3s;
+        }
+        .btn-excluir:hover { background: #ff3b30; color: white; }
     </style>
 </head>
 <body>
     <div class="admin-card">
         <h2>Central de Comando</h2>
-        <p class="subtitle">Adicione novas pastas e estudos à plataforma.</p>
+        <p class="subtitle">Adicione ou remova estudos da plataforma.</p>
         
         <form id="formAdmin">
             <div class="input-group">
@@ -132,9 +125,17 @@
                 <input type="url" id="link" placeholder="https://drive.google.com/file/d/..." required autocomplete="off">
             </div>
 
-            <button type="submit" id="btnSalvar">Publicar na Plataforma</button>
+            <button type="submit" id="btnSalvar" class="btn-principal">Publicar na Plataforma</button>
             <div id="statusMsg"></div>
         </form>
+
+        <div class="gerenciador-header">
+            <h3>Estudos Publicados</h3>
+            <p>Clique em Excluir para remover um estudo do site.</p>
+        </div>
+        <div id="listaEstudos" class="lista-estudos">
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Carregando...</p>
+        </div>
 
         <a href="principal.html" class="voltar">← Voltar ao Painel do Aluno</a>
     </div>
