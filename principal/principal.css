@@ -1,318 +1,55 @@
-/* Variáveis para consistência (Mesmas da sua tela de login) */
-:root {
-    --primary-color: #1c3a5e; 
-    --primary-hover: #122640;
-    --accent-color: #38bdf8;
-    --bg-main: #f8fafc;
-    --bg-sidebar: #ffffff;
-    --bg-card: #ffffff;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --transition: 0.3s ease;
-    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+/* Adicione no final do seu principal.css */
+
+/* MODO ESCURO DO PAINEL */
+body.dark-mode {
+    --primary-color: #38bdf8;
+    --primary-hover: #0284c7;
+    --bg-main: #0f172a;
+    --bg-sidebar: #1e293b;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: var(--font-family);
-    background-color: var(--bg-main);
-    color: var(--text-main);
-    overflow: hidden; /* O painel tem scroll interno */
-}
-
-/* Layout Principal */
-.dashboard-container {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-}
-
-/* Sidebar */
-.sidebar {
-    width: 280px;
-    background-color: var(--bg-sidebar);
-    border-right: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    z-index: 10;
-    box-shadow: var(--shadow-sm);
-}
-
-.sidebar-header {
-    padding: 24px;
+.user-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--primary-color);
+    gap: 20px;
 }
 
-.sidebar-header h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-}
-
-.sidebar-nav {
-    flex: 1;
-    padding: 24px 16px;
-    overflow-y: auto;
-}
-
-.sidebar-nav ul {
-    list-style: none;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: var(--text-muted);
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-.nav-item:hover {
-    background-color: #f1f5f9;
-    color: var(--primary-color);
-}
-
-.nav-item.active {
-    background-color: var(--primary-color);
-    color: #ffffff;
-}
-
-.sidebar-footer {
-    padding: 24px;
-    border-top: 1px solid var(--border-color);
-}
-
-.btn-logout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 12px;
+.theme-btn {
     background: transparent;
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-muted);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.btn-logout:hover {
-    background-color: #fee2e2;
-    color: #ef4444;
-    border-color: #f87171;
-}
-
-/* Conteúdo Principal */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-/* Barra Superior */
-.topbar {
-    height: 80px;
-    background-color: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background-color: var(--bg-main);
-    padding: 10px 16px;
-    border-radius: 50px;
-    width: 350px;
-    border: 1px solid var(--border-color);
-}
-
-.search-bar input {
-    border: none;
-    background: transparent;
-    outline: none;
-    width: 100%;
-    font-size: 0.95rem;
     color: var(--text-main);
-}
-
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    background-color: var(--primary-color);
-    color: white;
+    padding: 8px;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Área de Arquivos (Grid) */
-.content-area {
-    flex: 1;
-    padding: 40px;
-    overflow-y: auto;
-    background-color: var(--bg-main);
-}
-
-.section-header {
-    margin-bottom: 32px;
-}
-
-.section-header h1 {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 8px;
-}
-
-.section-header p {
-    color: var(--text-muted);
-}
-
-.pdf-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
-}
-
-.pdf-card {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-
-.pdf-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--accent-color);
-}
-
-.pdf-icon {
-    margin-bottom: 16px;
-    padding: 12px;
-    background-color: #ffe4e6;
-    border-radius: 8px;
-    display: inline-flex;
-    width: fit-content;
-}
-
-.pdf-info h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    line-height: 1.4;
-    color: var(--text-main);
-}
-
-.pdf-meta {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    display: block;
-    margin-bottom: 20px;
-}
-
-.btn-read {
-    margin-top: auto;
-    width: 100%;
-    padding: 10px;
-    background-color: #f1f5f9;
-    color: var(--primary-color);
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
     cursor: pointer;
-    transition: var(--transition);
-}
-
-.btn-read:hover {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-/* Modal do Leitor de PDF */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 100;
     display: flex;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    width: 90%;
-    height: 90%;
-    background-color: var(--bg-card);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-}
-
-.modal-header {
-    padding: 16px 24px;
-    background-color: var(--primary-color);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.btn-close {
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
     transition: var(--transition);
 }
 
-.btn-close:hover {
-    transform: scale(1.1);
+.theme-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: scale(1.05);
 }
 
-.modal-body {
-    flex: 1;
-    width: 100%;
-    background-color: #e2e8f0;
+/* Ajuste no card escuro para os ícones */
+body.dark-mode .pdf-icon {
+    background-color: rgba(225, 29, 72, 0.1);
+}
+
+body.dark-mode .btn-read {
+    background-color: #334155;
+    color: #f8fafc;
+}
+
+body.dark-mode .btn-read:hover {
+    background-color: var(--primary-color);
+    color: #0f172a;
 }
