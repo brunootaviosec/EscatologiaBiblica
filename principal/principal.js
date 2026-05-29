@@ -6,13 +6,13 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 
 // COLOQUE SUAS CHAVES DO FIREBASE AQUI
 const firebaseConfig = {
-    apiKey: "AIzaSyBwPhRfIY5d8U_nmxyuCpCAkKQlKBhGHli",
-    authDomain: "escatologiabiblica-c82c3.firebaseapp.com",
-    projectId: "escatologiabiblica-c82c3",
-    storageBucket: "escatologiabiblica-c82c3.firebasestorage.app",
-    messagingSenderId: "156849616608",
-    appId: "1:156849616608:web:a6eb47e0b00ca0ee824285",
-    measurementId: "G-ZQRZ7CP8PH"
+  apiKey: "AIzaSyBwPhRfJYSdBU_mmxyuCpCAkKQlKBhGHLI",
+  authDomain: "escatologiabiblica-c82c3.firebaseapp.com",
+  projectId: "escatologiabiblica-c82c3",
+  storageBucket: "escatologiabiblica-c82c3.firebasestorage.app",
+  messagingSenderId: "156849616608",
+  appId: "1:156849616608:web:a6eb47e0b00ca0ee824285",
+  measurementId: "G-ZQRZ7CPBPH"
 };
 
 // Inicializa Firebase
