@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // COLOQUE SUAS CHAVES REAIS DO FIREBASE AQUI
@@ -17,26 +17,57 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ==========================================
-// 🔒 SISTEMA DE SEGURANÇA: APENAS ADMIN
-// ==========================================
-const EMAIL_ADMIN = "bruno.otavio.j.melo@gmail.com"; // Exatamente o seu e-mail
+// 🔒 SEGURANÇA
+const EMAIL_ADMIN = "bruno.otavio.j.melo@gmail.com"; 
 
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        // 1. Se tentar entrar sem estar logado -> Expulsa para o Login
         window.location.href = "../login1/login.html";
     } else if (user.email !== EMAIL_ADMIN) {
-        // 2. Se for um aluno logado tentando bancar o espertinho -> Expulsa para o Painel de Aluno
         alert("⚠️ Acesso Negado: Área restrita à administração.");
         window.location.href = "principal.html";
     } else {
-        // 3. É você! Acesso autorizado.
-        console.log("Acesso de Administrador Verificado.");
+        // Acesso liberado, carrega as pastas para sugestão
+        carregarPastasExistentes();
     }
 });
-// ==========================================
 
+// Função para formatar o nome da pasta e criar um ID único e limpo
+function criarIdDaPasta(nome) {
+    return nome.toString().toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
+        .replace(/\s+/g, '-') // Troca espaços por hifens
+        .replace(/[^\w\-]+/g, '') // Remove caracteres especiais
+        .replace(/\-\-+/g, '-') // Remove hifens duplos
+        .trim();
+}
+
+// Carrega as pastas do Firebase e joga na lista de sugestões (Datalist)
+async function carregarPastasExistentes() {
+    const pastasList = document.getElementById('pastasList');
+    pastasList.innerHTML = ''; 
+    try {
+        const querySnapshot = await getDocs(collection(db, "pastas"));
+        querySnapshot.forEach((doc) => {
+            const option = document.createElement('option');
+            option.value = doc.data().nome;
+            pastasList.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Erro ao carregar pastas: ", error);
+    }
+}
+
+// Mostra mensagem na tela
+function mostrarMensagem(texto, tipo) {
+    const msgBox = document.getElementById('statusMsg');
+    msgBox.textContent = texto;
+    msgBox.className = tipo;
+    msgBox.style.display = 'block';
+    setTimeout(() => { msgBox.style.display = 'none'; }, 4000);
+}
+
+// Ação de Salvar
 document.getElementById('formAdmin').addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -44,21 +75,28 @@ document.getElementById('formAdmin').addEventListener('submit', async (e) => {
     btn.textContent = "Publicando...";
     btn.disabled = true;
 
-    const titulo = document.getElementById('titulo').value;
-    let link = document.getElementById('link').value;
+    const titulo = document.getElementById('titulo').value.trim();
+    let link = document.getElementById('link').value.trim();
+    const pastaNome = document.getElementById('pastaNome').value.trim();
     
-    const pastaSelect = document.getElementById('pastaSelect');
-    const pastaId = pastaSelect.value;
-    const pastaNome = pastaSelect.options[pastaSelect.selectedIndex].text;
+    // Gera o ID automaticamente (ex: "A Volta de Cristo" vira "a-volta-de-cristo")
+    const pastaId = criarIdDaPasta(pastaNome);
 
     // Correção Automática do Link do Drive
     if (link.includes('/view')) {
         link = link.split('/view')[0] + '/preview';
+    } else if (!link.includes('/preview')) {
+        // Tenta forçar o preview se for um link do drive genérico
+        if (link.includes('drive.google.com/file/d/')) {
+            link = link + '/preview';
+        }
     }
 
     try {
+        // 1. Cria a pasta (se já existir com esse ID, ele apenas confirma o nome)
         await setDoc(doc(db, "pastas", pastaId), { nome: pastaNome });
 
+        // 2. Adiciona o PDF
         const hoje = new Date().toLocaleDateString('pt-BR');
         await addDoc(collection(db, "pdfs"), {
             titulo: titulo,
@@ -67,16 +105,21 @@ document.getElementById('formAdmin').addEventListener('submit', async (e) => {
             dataAdicao: hoje
         });
 
-        alert("✅ Estudo publicado com sucesso no site!");
+        mostrarMensagem("✅ Estudo publicado com sucesso!", "success");
         
+        // Limpa os campos do estudo, mas mantém a pasta selecionada para facilitar envio em lote
         document.getElementById('titulo').value = '';
         document.getElementById('link').value = '';
+        document.getElementById('titulo').focus();
+        
+        // Atualiza a lista de sugestões
+        carregarPastasExistentes();
         
     } catch (error) {
         console.error("Erro ao salvar:", error);
-        alert("❌ Erro ao publicar. Verifique o console.");
+        mostrarMensagem("❌ Erro ao publicar. Verifique o console.", "error");
     } finally {
-        btn.textContent = "Publicar no Site";
+        btn.textContent = "Publicar na Plataforma";
         btn.disabled = false;
     }
 });

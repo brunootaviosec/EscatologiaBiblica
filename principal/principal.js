@@ -175,3 +175,22 @@ closeModalBtn.addEventListener('click', () => {
     pdfViewerModal.style.display = 'none';
     pdfIframe.src = ""; 
 });
+
+// --- 6. SISTEMA ANTI-PIRATARIA (Bloqueios no site) ---
+// 1. Bloqueia o clique com o botão direito do mouse em todo o painel
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// 2. Bloqueia atalhos de teclado usados para copiar, imprimir ou inspecionar o código
+document.addEventListener('keydown', function(e) {
+    // Bloqueia: Ctrl+P (Imprimir), Ctrl+S (Salvar), Ctrl+U (Código Fonte), Ctrl+C (Copiar)
+    if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'c' || 
+                      e.key === 'P' || e.key === 'S' || e.key === 'U' || e.key === 'C')) {
+        e.preventDefault();
+    }
+    // Bloqueia a tecla F12 (Inspecionar Elemento)
+    if (e.key === 'F12') {
+        e.preventDefault();
+    }
+});
