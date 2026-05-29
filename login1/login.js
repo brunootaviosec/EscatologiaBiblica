@@ -4,14 +4,14 @@ import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/fir
 
 // COLOQUE SUAS CHAVES DO FIREBASE AQUI (As mesmas do principal.js)
 const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_PROJETO.firebaseapp.com",
-    projectId: "SEU_PROJETO",
-    storageBucket: "SEU_PROJETO.appspot.com",
-    messagingSenderId: "SEU_SENDER_ID",
-    appId: "SEU_APP_ID"
+    apiKey: "AIzaSyBwPhRfIY5d8U_nmxyuCpCAkKQlKBhGHli",
+    authDomain: "escatologiabiblica-c82c3.firebaseapp.com",
+    projectId: "escatologiabiblica-c82c3",
+    storageBucket: "escatologiabiblica-c82c3.firebasestorage.app",
+    messagingSenderId: "156849616608",
+    appId: "1:156849616608:web:a6eb47e0b00ca0ee824285",
+    measurementId: "G-ZQRZ7CP8PH"
 };
-
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
