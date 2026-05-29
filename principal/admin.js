@@ -1,5 +1,4 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-// Adicionamos o "deleteDoc" aqui em cima!
 import { getFirestore, collection, addDoc, doc, setDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -18,21 +17,28 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// 🔒 SEGURANÇA
-const EMAIL_ADMIN = "bruno.otavio.j.melo@gmail.com"; 
+// ==========================================
+// 🔒 SEGURANÇA: LISTA VIP DE ADMINS
+// ==========================================
+const ADMIN_EMAILS = [
+    "bruno.otavio.j.melo@gmail.com",
+    "email_do_seu_auxiliar@gmail.com"
+];
 
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         window.location.href = "../login1/login.html";
-    } else if (user.email !== EMAIL_ADMIN) {
+    } else if (!ADMIN_EMAILS.includes(user.email)) {
         alert("⚠️ Acesso Negado: Área restrita à administração.");
         window.location.href = "principal.html";
     } else {
-        // Acesso liberado, carrega tudo!
+        // Acesso liberado, carrega as listas
         carregarPastasExistentes();
-        carregarEstudosParaGerenciar(); // Carrega a lista de excluir
+        carregarEstudosParaGerenciar(); // Carrega a lista de excluir estudos
+        carregarPastasParaGerenciar();  // Carrega a lista de excluir pastas
     }
 });
+// ==========================================
 
 // Formata o nome da pasta para ID
 function criarIdDaPasta(nome) {
@@ -53,7 +59,7 @@ function mostrarMensagem(texto, tipo) {
     setTimeout(() => { msgBox.style.display = 'none'; }, 4000);
 }
 
-// 1. CARREGAR PASTAS NO DATALIST (Sugestões)
+// 1. CARREGAR PASTAS NO DATALIST (Sugestões do Formulário)
 async function carregarPastasExistentes() {
     const pastasList = document.getElementById('pastasList');
     pastasList.innerHTML = ''; 
@@ -69,14 +75,14 @@ async function carregarPastasExistentes() {
     }
 }
 
-// 2. CARREGAR ESTUDOS PARA O GERENCIADOR (Para poder excluir)
+// 2. CARREGAR ESTUDOS PARA O GERENCIADOR (Para poder excluir Estudos)
 async function carregarEstudosParaGerenciar() {
     const listaEstudos = document.getElementById('listaEstudos');
     listaEstudos.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Carregando...</p>';
     
     try {
         const querySnapshot = await getDocs(collection(db, "pdfs"));
-        listaEstudos.innerHTML = ''; // Limpa o "Carregando..."
+        listaEstudos.innerHTML = ''; 
 
         if (querySnapshot.empty) {
             listaEstudos.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nenhum estudo publicado ainda.</p>';
@@ -89,7 +95,7 @@ async function carregarEstudosParaGerenciar() {
             item.className = 'estudo-item';
             item.innerHTML = `
                 <div class="estudo-info">
-                    <strong>${pdf.titulo}</strong>
+                    <strong>📄 ${pdf.titulo}</strong>
                     <small>Pasta: ${pdf.pastaId}</small>
                 </div>
                 <button class="btn-excluir" data-id="${documento.id}">Excluir</button>
@@ -97,34 +103,84 @@ async function carregarEstudosParaGerenciar() {
             listaEstudos.appendChild(item);
         });
 
-        // Adiciona a função de excluir em cada botão que acabou de ser criado na tela
-        document.querySelectorAll('.btn-excluir').forEach(botao => {
+        // Adiciona a função de excluir em cada botão de estudo
+        document.getElementById('listaEstudos').querySelectorAll('.btn-excluir').forEach(botao => {
             botao.addEventListener('click', async (e) => {
                 const docId = e.target.getAttribute('data-id');
                 
-                // Pede confirmação antes de apagar
                 if(confirm("Tem certeza que deseja APAGAR este estudo do site?")) {
                     e.target.textContent = "Apagando...";
                     try {
-                        // Deleta do Banco de Dados
                         await deleteDoc(doc(db, "pdfs", docId));
                         mostrarMensagem("🗑️ Estudo removido com sucesso!", "success");
-                        // Recarrega a lista para o estudo sumir da tela
                         carregarEstudosParaGerenciar();
                     } catch (error) {
-                        console.error("Erro ao excluir:", error);
-                        mostrarMensagem("❌ Erro ao excluir.", "error");
+                        console.error("Erro ao excluir estudo:", error);
+                        mostrarMensagem("❌ Erro ao excluir estudo.", "error");
+                    }
+                }
+            });
+        });
+    } catch (error) {
+        console.error("Erro ao carregar gerenciador de estudos: ", error);
+    }
+}
+
+// 3. CARREGAR PASTAS PARA O GERENCIADOR (Para poder excluir Pastas)
+async function carregarPastasParaGerenciar() {
+    const listaPastas = document.getElementById('listaPastas');
+    listaPastas.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Carregando...</p>';
+    
+    try {
+        const querySnapshot = await getDocs(collection(db, "pastas"));
+        listaPastas.innerHTML = ''; 
+
+        if (querySnapshot.empty) {
+            listaPastas.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Nenhuma pasta criada ainda.</p>';
+            return;
+        }
+
+        querySnapshot.forEach((documento) => {
+            const pasta = documento.data();
+            const item = document.createElement('div');
+            item.className = 'estudo-item';
+            item.innerHTML = `
+                <div class="estudo-info">
+                    <strong>📁 ${pasta.nome}</strong>
+                </div>
+                <button class="btn-excluir" data-id="${documento.id}">Excluir</button>
+            `;
+            listaPastas.appendChild(item);
+        });
+
+        // Adiciona a função de excluir em cada botão de pasta
+        document.getElementById('listaPastas').querySelectorAll('.btn-excluir').forEach(botao => {
+            botao.addEventListener('click', async (e) => {
+                const docId = e.target.getAttribute('data-id');
+                
+                // Aviso extra: Se apagar a pasta, os arquivos dentro dela não aparecem mais.
+                if(confirm("Tem certeza que deseja APAGAR esta pasta? (Se houver estudos nela, eles não aparecerão mais no site).")) {
+                    e.target.textContent = "Apagando...";
+                    try {
+                        await deleteDoc(doc(db, "pastas", docId));
+                        mostrarMensagem("📁 Pasta removida com sucesso!", "success");
+                        // Atualiza as listas na tela
+                        carregarPastasExistentes();
+                        carregarPastasParaGerenciar();
+                    } catch (error) {
+                        console.error("Erro ao excluir pasta:", error);
+                        mostrarMensagem("❌ Erro ao excluir pasta.", "error");
                     }
                 }
             });
         });
 
     } catch (error) {
-        console.error("Erro ao carregar gerenciador: ", error);
+        console.error("Erro ao carregar gerenciador de pastas: ", error);
     }
 }
 
-// 3. AÇÃO DE SALVAR NOVO ESTUDO
+// 4. AÇÃO DE SALVAR NOVO ESTUDO E PASTA
 document.getElementById('formAdmin').addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -160,9 +216,10 @@ document.getElementById('formAdmin').addEventListener('submit', async (e) => {
         document.getElementById('link').value = '';
         document.getElementById('titulo').focus();
         
-        // Atualiza a tela automaticamente para mostrar a nova pasta e o novo estudo na lista de exclusão
+        // Atualiza a tela automaticamente
         carregarPastasExistentes();
         carregarEstudosParaGerenciar();
+        carregarPastasParaGerenciar();
         
     } catch (error) {
         console.error("Erro ao salvar:", error);
