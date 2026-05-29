@@ -1,19 +1,30 @@
-/* Variáveis para consistência */
+/* Desenvolvido Por Bruno Otávio Jeronimo Melo | Pedra-PE */
+
+/* =========================================
+   VARIÁVEIS - MODO CLARO (PADRÃO)
+   ========================================= */
 :root {
     --primary-color: #1c3a5e; 
     --primary-hover: #122640;
     --accent-color: #38bdf8;
     --bg-main: #f8fafc;
     --bg-sidebar: #ffffff;
+    --bg-topbar: #ffffff;
     --bg-card: #ffffff;
+    --bg-content: #f8fafc;
     --text-main: #1e293b;
     --text-muted: #64748b;
     --border-color: #e2e8f0;
-    --transition: 0.3s ease;
+    --search-bg: #f1f5f9;
+    --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-md: 0 8px 16px rgba(0,0,0,0.08);
+    --shadow-lg: 0 15px 35px rgba(0,0,0,0.1);
+    
+    /* Variáveis do Efeito Vidro (Inativas no claro) */
+    --glass-blur: blur(0px);
+    --glass-border: var(--border-color);
 }
 
 * {
@@ -27,77 +38,309 @@ body {
     background-color: var(--bg-main);
     color: var(--text-main);
     overflow: hidden;
+    transition: background 0.5s ease;
 }
 
-/* Layout Principal */
-.dashboard-container { display: flex; height: 100vh; width: 100vw; }
+/* =========================================
+   LAYOUT PRINCIPAL
+   ========================================= */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
 
-/* Sidebar */
-.sidebar { width: 280px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; z-index: 10; box-shadow: var(--shadow-sm); }
-.sidebar-header { padding: 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-color); color: var(--primary-color); }
-.sidebar-header h2 { font-size: 1.25rem; font-weight: 700; }
-.sidebar-nav { flex: 1; padding: 24px 16px; overflow-y: auto; }
+/* --- BARRA LATERAL (SIDEBAR) --- */
+.sidebar {
+    width: 280px;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    transition: var(--transition);
+}
+
+.sidebar-header {
+    padding: 28px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--primary-color);
+}
+
+.sidebar-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 24px 16px;
+    overflow-y: auto;
+}
+
 .sidebar-nav ul { list-style: none; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-weight: 500; transition: var(--transition); }
-.nav-item:hover { background-color: #f1f5f9; color: var(--primary-color); }
-.nav-item.active { background-color: var(--primary-color); color: #ffffff; }
-.sidebar-footer { padding: 24px; border-top: 1px solid var(--border-color); }
-.btn-logout { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-muted); font-weight: 600; cursor: pointer; transition: var(--transition); }
-.btn-logout:hover { background-color: #fee2e2; color: #ef4444; border-color: #f87171; }
 
-/* Conteúdo Principal */
-.main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-
-/* Barra Superior */
-.topbar { height: 80px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
-.search-bar { display: flex; align-items: center; gap: 12px; background-color: var(--bg-main); padding: 10px 16px; border-radius: 50px; width: 350px; border: 1px solid var(--border-color); }
-.search-bar input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.95rem; color: var(--text-main); }
-
-.user-actions { display: flex; align-items: center; gap: 20px; }
-.user-profile { display: flex; align-items: center; gap: 16px; }
-.avatar { width: 40px; height: 40px; background-color: var(--primary-color); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
-
-/* Botão de Tema */
-.theme-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-.theme-btn:hover { border-color: var(--primary-color); color: var(--primary-color); transform: scale(1.05); }
-
-/* Área de Arquivos (Grid) */
-.content-area { flex: 1; padding: 40px; overflow-y: auto; background-color: var(--bg-main); }
-.section-header { margin-bottom: 32px; }
-.section-header h1 { font-size: 2rem; color: var(--primary-color); margin-bottom: 8px; }
-.section-header p { color: var(--text-muted); }
-
-.pdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-.pdf-card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); transition: var(--transition); }
-.pdf-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent-color); }
-.pdf-icon { margin-bottom: 16px; padding: 12px; background-color: #ffe4e6; border-radius: 8px; display: inline-flex; width: fit-content; }
-.pdf-info h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; color: var(--text-main); }
-.pdf-meta { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 20px; }
-.btn-read { margin-top: auto; width: 100%; padding: 10px; background-color: #f1f5f9; color: var(--primary-color); border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: var(--transition); }
-.btn-read:hover { background-color: var(--primary-color); color: white; }
-
-/* Modal do Leitor de PDF */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(4px); z-index: 100; display: flex; justify-content: center; align-items: center; }
-.modal-content { width: 90%; height: 90%; background-color: var(--bg-card); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-lg); }
-.modal-header { padding: 16px 24px; background-color: var(--primary-color); color: white; display: flex; justify-content: space-between; align-items: center; }
-.btn-close { background: transparent; border: none; color: white; cursor: pointer; transition: var(--transition); }
-.btn-close:hover { transform: scale(1.1); }
-.modal-body { flex: 1; width: 100%; background-color: #e2e8f0; }
-
-/* MODO ESCURO DO PAINEL */
-body.dark-mode {
-    --primary-color: #38bdf8;
-    --primary-hover: #0284c7;
-    --bg-main: #0f172a;
-    --bg-sidebar: #1e293b;
-    --bg-card: #1e293b;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: #334155;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition);
 }
 
-body.dark-mode .pdf-icon { background-color: rgba(225, 29, 72, 0.1); }
-body.dark-mode .btn-read { background-color: #334155; color: #f8fafc; }
-body.dark-mode .btn-read:hover { background-color: var(--primary-color); color: #0f172a; }
+.nav-item:hover {
+    background-color: rgba(28, 58, 94, 0.05);
+    color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.nav-item.active {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(28, 58, 94, 0.2);
+}
+
+.sidebar-footer {
+    padding: 24px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-logout:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* --- CONTEÚDO E BARRA SUPERIOR --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.topbar {
+    height: 80px;
+    background: var(--bg-topbar);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    z-index: 5;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--search-bg);
+    padding: 12px 20px;
+    border-radius: 50px;
+    width: 400px;
+    border: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.search-bar:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(28, 58, 94, 0.1);
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.user-actions { display: flex; align-items: center; gap: 24px; }
+.user-profile { display: flex; align-items: center; gap: 16px; }
+.user-greeting { font-size: 0.95rem; color: var(--text-muted); }
+.user-greeting strong { color: var(--text-main); }
+.avatar { width: 42px; height: 42px; background-color: var(--primary-color); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; }
+
+.theme-btn {
+    background: var(--search-bg);
+    border: none;
+    color: var(--text-main);
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.theme-btn:hover {
+    transform: scale(1.1) rotate(15deg);
+    color: var(--primary-color);
+}
+
+/* --- ÁREA DOS ARQUIVOS (GRID) --- */
+.content-area {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    background: var(--bg-content);
+}
+
+.section-header { margin-bottom: 40px; }
+.section-header h1 { font-size: 2.2rem; color: var(--text-main); margin-bottom: 8px; font-weight: 700; letter-spacing: -0.5px; }
+.section-header p { color: var(--text-muted); font-size: 1.05rem; }
+
+.pdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+
+.pdf-card {
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.pdf-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+}
+
+.pdf-icon {
+    margin-bottom: 20px;
+    padding: 14px;
+    background-color: rgba(225, 29, 72, 0.1);
+    border-radius: 12px;
+    display: inline-flex;
+    width: fit-content;
+    color: #e11d48;
+}
+
+.pdf-info h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; color: var(--text-main); }
+.pdf-meta { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 24px; }
+
+.btn-read {
+    margin-top: auto;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--search-bg);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-read:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* --- MODAL DO LEITOR --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; display: flex; justify-content: center; align-items: center; }
+.modal-content { width: 95%; height: 95%; background-color: var(--bg-main); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--glass-border); }
+.modal-header { padding: 16px 24px; background-color: var(--bg-sidebar); border-bottom: 1px solid var(--glass-border); color: var(--text-main); display: flex; justify-content: space-between; align-items: center; }
+.btn-close { background: transparent; border: none; color: var(--text-muted); cursor: pointer; transition: var(--transition); }
+.btn-close:hover { color: #ef4444; transform: scale(1.1); }
+.modal-body { flex: 1; width: 100%; background-color: #1a1a1a; }
+
+/* =========================================
+   MODO ESCURO PREMIUM (IPHONE GLASS EFFECT)
+   ========================================= */
+body.dark-mode {
+    /* Cores fiéis ao Modo Escuro da Apple */
+    --primary-color: #0a84ff; 
+    --primary-hover: #007aff;
+    --text-main: #ffffff;
+    --text-muted: #8e8e93;
+    
+    /* Fundos Vidro Translúcido */
+    --bg-sidebar: rgba(28, 28, 30, 0.65);
+    --bg-topbar: rgba(28, 28, 30, 0.65);
+    --bg-card: rgba(44, 44, 46, 0.5);
+    --search-bg: rgba(118, 118, 128, 0.24);
+    
+    /* Bordas Finas Iluminadas (Efeito de corte no vidro) */
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: blur(25px);
+
+    /* O SEGREDO DO "LÍQUIDO": Fundo Preto Verdadeiro com gradientes de luz suaves */
+    background-color: #000000;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(10, 132, 255, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(94, 92, 230, 0.12) 0%, transparent 40%);
+    background-attachment: fixed;
+    --bg-content: transparent; /* Permite ver o fundo através da área principal */
+}
+
+/* Ajustes Específicos para os elementos no Efeito Vidro */
+body.dark-mode .pdf-card {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .pdf-card:hover {
+    border-color: rgba(10, 132, 255, 0.5);
+    background: rgba(44, 44, 46, 0.7);
+    box-shadow: 0 10px 40px 0 rgba(10, 132, 255, 0.15);
+}
+
+body.dark-mode .btn-read {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+}
+
+body.dark-mode .btn-read:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+body.dark-mode .nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .sidebar-header { color: var(--text-main); }
+body.dark-mode .theme-btn { color: #f5d44f; /* Amarelo no ícone da lua/sol no escuro */ }
+
+/* Barra de Rolagem Premium (Scrollbar) para Modo Escuro */
+body.dark-mode ::-webkit-scrollbar { width: 8px; }
+body.dark-mode ::-webkit-scrollbar-track { background: transparent; }
+body.dark-mode ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+body.dark-mode ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
