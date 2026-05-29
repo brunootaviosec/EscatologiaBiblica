@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// COLOQUE SUAS CHAVES REAIS AQUI (As mesmas do login.js)
+// COLOQUE SUAS CHAVES REAIS DO FIREBASE AQUI
 const firebaseConfig = {
   apiKey: "AIzaSyBwPhRfJYSdBU_mmxyuCpCAkKQlKBhGHLI",
   authDomain: "escatologiabiblica-c82c3.firebaseapp.com",
@@ -21,7 +21,6 @@ const db = getFirestore(app);
 onAuthStateChanged(auth, (user) => {
     if (user) {
         document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
-        // Carrega as pastas assim que logar
         carregarPastas();
     } else {
         window.location.href = "../login1/login.html";
@@ -32,12 +31,25 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     signOut(auth).then(() => window.location.href = "../login1/login.html");
 });
 
-// --- 2. TEMA MODO ESCURO ---
+// --- 2. MENU RESPONSIVO (MOBILE) EFEITO DESLIZE ---
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function toggleMobileMenu() {
+    sidebar.classList.toggle('open');
+    sidebarOverlay.classList.toggle('active');
+}
+
+mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+sidebarOverlay.addEventListener('click', toggleMobileMenu); // Clicou fora, fecha o menu
+
+
+// --- 3. TEMA MODO ESCURO (GLASS EFFECT) ---
 const themeToggle = document.getElementById('themeToggle');
 const sunIcon = document.getElementById('sunIcon');
 const moonIcon = document.getElementById('moonIcon');
 
-// Verifica tema salvo ou preferência do sistema
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     document.body.classList.add('dark-mode');
@@ -60,12 +72,10 @@ themeToggle.addEventListener('click', () => {
     }
 });
 
-// --- 3. SISTEMA DINÂMICO (FIRESTORE) ---
-
-// Função para buscar pastas no Banco de Dados
+// --- 4. SISTEMA DINÂMICO (FIRESTORE) ---
 async function carregarPastas() {
     const folderList = document.getElementById('folderList');
-    folderList.innerHTML = ''; // Limpa o carregando
+    folderList.innerHTML = ''; 
 
     try {
         const querySnapshot = await getDocs(collection(db, "pastas"));
@@ -87,17 +97,20 @@ async function carregarPastas() {
                 ${pasta.nome}
             `;
             
-            // Evento de clique para mudar de pasta
             li.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 li.classList.add('active');
                 document.getElementById('currentFolderTitle').textContent = pasta.nome;
-                carregarPdfs(doc.id); // Carrega PDFs desta pasta específica
+                carregarPdfs(doc.id);
+                
+                // Se estiver no celular, fecha o menu automaticamente ao escolher a pasta
+                if (window.innerWidth <= 768) {
+                    toggleMobileMenu();
+                }
             });
 
             folderList.appendChild(li);
             
-            // Carrega os PDFs da primeira pasta automaticamente
             if(isFirst) {
                 document.getElementById('currentFolderTitle').textContent = pasta.nome;
                 carregarPdfs(doc.id);
@@ -110,7 +123,6 @@ async function carregarPastas() {
     }
 }
 
-// Função para buscar PDFs de uma pasta específica
 async function carregarPdfs(pastaId) {
     const pdfGrid = document.getElementById('pdfGrid');
     pdfGrid.innerHTML = '<p>Buscando arquivos...</p>';
@@ -119,7 +131,7 @@ async function carregarPdfs(pastaId) {
         const q = query(collection(db, "pdfs"), where("pastaId", "==", pastaId));
         const querySnapshot = await getDocs(q);
 
-        pdfGrid.innerHTML = ''; // Limpa
+        pdfGrid.innerHTML = '';
 
         if (querySnapshot.empty) {
             pdfGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhum material cadastrado nesta pasta.</p>';
@@ -128,7 +140,6 @@ async function carregarPdfs(pastaId) {
 
         querySnapshot.forEach((doc) => {
             const pdf = doc.data();
-            
             const card = document.createElement('div');
             card.className = 'pdf-card';
             card.innerHTML = `
@@ -149,7 +160,7 @@ async function carregarPdfs(pastaId) {
     }
 }
 
-// --- 4. LEITOR DE PDF ---
+// --- 5. LEITOR DE PDF ---
 const pdfViewerModal = document.getElementById('pdfViewerModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const pdfIframe = document.getElementById('pdfIframe');
