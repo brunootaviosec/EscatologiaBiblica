@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // COLOQUE SUAS CHAVES REAIS DO FIREBASE AQUI
 const firebaseConfig = {
@@ -14,6 +15,27 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ==========================================
+// 🔒 SISTEMA DE SEGURANÇA: APENAS ADMIN
+// ==========================================
+const EMAIL_ADMIN = "bruno.otavio.j.melo@gmail.com"; // Exatamente o seu e-mail
+
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        // 1. Se tentar entrar sem estar logado -> Expulsa para o Login
+        window.location.href = "../login1/login.html";
+    } else if (user.email !== EMAIL_ADMIN) {
+        // 2. Se for um aluno logado tentando bancar o espertinho -> Expulsa para o Painel de Aluno
+        alert("⚠️ Acesso Negado: Área restrita à administração.");
+        window.location.href = "principal.html";
+    } else {
+        // 3. É você! Acesso autorizado.
+        console.log("Acesso de Administrador Verificado.");
+    }
+});
+// ==========================================
 
 document.getElementById('formAdmin').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -29,16 +51,14 @@ document.getElementById('formAdmin').addEventListener('submit', async (e) => {
     const pastaId = pastaSelect.value;
     const pastaNome = pastaSelect.options[pastaSelect.selectedIndex].text;
 
-    // Correção Automática do Link do Drive (Mágica!)
+    // Correção Automática do Link do Drive
     if (link.includes('/view')) {
         link = link.split('/view')[0] + '/preview';
     }
 
     try {
-        // 1. Cria ou garante que a pasta existe no banco
         await setDoc(doc(db, "pastas", pastaId), { nome: pastaNome });
 
-        // 2. Adiciona o PDF lá dentro
         const hoje = new Date().toLocaleDateString('pt-BR');
         await addDoc(collection(db, "pdfs"), {
             titulo: titulo,
@@ -49,7 +69,6 @@ document.getElementById('formAdmin').addEventListener('submit', async (e) => {
 
         alert("✅ Estudo publicado com sucesso no site!");
         
-        // Limpa o formulário para você colocar o próximo
         document.getElementById('titulo').value = '';
         document.getElementById('link').value = '';
         
