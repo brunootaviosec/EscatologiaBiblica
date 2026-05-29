@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Professor - Enviar Estudos</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .admin-card { background: #1e293b; padding: 40px; border-radius: 16px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { margin-top: 0; color: #38bdf8; margin-bottom: 24px; text-align: center; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; }
+        input:focus, select:focus { border-color: #38bdf8; }
+        button { width: 100%; padding: 14px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #0284c7; color: white; }
+        .voltar { display: block; text-align: center; margin-top: 20px; color: #94a3b8; text-decoration: none; }
+        .voltar:hover { color: white; }
+    </style>
+</head>
+<body>
+    <div class="admin-card">
+        <h2>Adicionar Novo Estudo</h2>
+        
+        <form id="formAdmin">
+            <div class="input-group">
+                <label>Selecione a Pasta</label>
+                <select id="pastaSelect" required>
+                    <option value="profecias">Profecias</option>
+                    <option value="relacionamento">Relacionamento</option>
+                    <option value="conduta">Conduta</option>
+                    <option value="caminho_cristo">O Caminho de Cristo</option>
+                    <option value="importante_nt">Importante NT Cristo</option>
+                    <option value="superioridade_nvi">Superioridade NVI</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Título do Estudo (Ex: De Daniel 2 ao Novo Testamento)</label>
+                <input type="text" id="titulo" placeholder="Digite o título..." required>
+            </div>
+
+            <div class="input-group">
+                <label>Link de Compartilhamento do Google Drive</label>
+                <input type="url" id="link" placeholder="Cole o link aqui..." required>
+            </div>
+
+            <button type="submit" id="btnSalvar">Publicar no Site</button>
+        </form>
+
+        <a href="principal.html" class="voltar">Voltar para o Painel de Alunos</a>
+    </div>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
