@@ -232,3 +232,28 @@ body {
     border-top: 1px solid var(--border-color);
     padding-top: 24px;
 }
+
+/* Botão do Administrador */
+.btn-admin {
+    width: 100%;
+    padding: 12px;
+    margin-top: -12px;
+    margin-bottom: 12px;
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.btn-admin:hover {
+    background: rgba(56, 189, 248, 0.1);
+    transform: translateY(-2px);
+}
+
+.btn-admin:active {
+    transform: scale(0.97);
+}

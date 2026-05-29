@@ -107,4 +107,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 2000);
             });
     });
+
+    // --- SISTEMA DE LOGIN DO ADMINISTRADOR ---
+    const btnAdmin = document.getElementById('btnAdmin');
+
+    // 📋 LISTA VIP: Coloque aqui os e-mails que podem acessar o Admin
+    const ADMIN_EMAILS = [
+        "bruno.otavio.j.melo@gmail.com",
+        "email_do_seu_auxiliar@gmail.com" // Você pode ir adicionando outros separando por vírgula
+    ];
+
+    if(btnAdmin) {
+        btnAdmin.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if(!email || !password) {
+                alert("Por favor, preencha e-mail e senha para acessar como Administrador.");
+                return;
+            }
+
+            btnAdmin.textContent = "Verificando...";
+
+            // Tenta fazer o login no Firebase
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    
+                    // Checa se o e-mail está na Lista Vip
+                    if (ADMIN_EMAILS.includes(user.email)) {
+                        // É admin! Vai para o painel secreto
+                        window.location.href = "../principal/admin.html";
+                    } else {
+                        // É um aluno tentando usar o botão errado
+                        alert("⚠️ Acesso Negado: Você não tem permissão de Administrador.");
+                        auth.signOut(); // Desloga o penetra
+                        btnAdmin.textContent = "Entrar como Administrador";
+                    }
+                })
+                .catch((error) => {
+                    alert("❌ Erro: E-mail ou senha incorretos.");
+                    btnAdmin.textContent = "Entrar como Administrador";
+                });
+        });
+    }
 });
